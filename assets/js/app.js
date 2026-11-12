@@ -6,10 +6,15 @@ function applyTheme(theme) {
     document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
 
     if (themeToggle) {
+        const icon = themeToggle.querySelector('.tw-toggle-icon');
+        const label = themeToggle.querySelector('.tw-toggle-label');
         themeToggle.setAttribute('aria-pressed', String(isDark));
-        themeToggle.innerHTML = isDark
-            ? '<span aria-hidden="true">☀</span><span class="d-none d-sm-inline">Thème clair</span>'
-            : '<span aria-hidden="true">☾</span><span class="d-none d-sm-inline">Thème sombre</span>';
+        themeToggle.dataset.state = isDark ? 'dark' : 'light';
+
+        if (icon && label) {
+            icon.textContent = isDark ? '☀' : '☾';
+            label.textContent = isDark ? 'Thème clair' : 'Thème sombre';
+        }
     }
 }
 

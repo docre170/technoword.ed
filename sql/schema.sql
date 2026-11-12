@@ -127,6 +127,22 @@ CREATE TABLE IF NOT EXISTS inscription (
     CONSTRAINT chk_inscription_progression CHECK (progression BETWEEN 0 AND 100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS lecon_lue (
+    utilisateur_id INT UNSIGNED NOT NULL,
+    lecon_id INT UNSIGNED NOT NULL,
+    date_lecture TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (utilisateur_id, lecon_id),
+    KEY idx_lecon_lue_lecon (lecon_id),
+    CONSTRAINT fk_lecon_lue_utilisateur
+        FOREIGN KEY (utilisateur_id) REFERENCES utilisateur (id)
+        ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_lecon_lue_lecon
+        FOREIGN KEY (lecon_id) REFERENCES lecon (id)
+        ON UPDATE CASCADE ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS resultat (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT,
     utilisateur_id INT UNSIGNED NOT NULL,

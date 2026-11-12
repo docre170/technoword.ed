@@ -24,8 +24,9 @@ function redirect(string $url): void
 function app_url(string $path): string
 {
     $scriptDirectory = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
-    if (substr($scriptDirectory, -17) === '/pages/enseignant') {
-        $scriptDirectory = substr($scriptDirectory, 0, -17);
+    $pagesPosition = strpos($scriptDirectory, '/pages/');
+    if ($pagesPosition !== false) {
+        $scriptDirectory = substr($scriptDirectory, 0, $pagesPosition);
     } elseif (substr($scriptDirectory, -6) === '/pages') {
         $scriptDirectory = substr($scriptDirectory, 0, -6);
     }

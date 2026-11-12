@@ -96,8 +96,12 @@ $courses = $courseStatement->fetchAll();
         <div class="d-flex align-items-center gap-3">
             <a class="btn btn-link text-decoration-none fw-semibold d-none d-sm-inline"
                href="<?= h(app_url('index.php')) ?>">Mon espace</a>
-            <button class="btn btn-outline-secondary rounded-pill px-3 tw-theme-toggle"
-                    type="button" data-theme-toggle aria-pressed="false">Thème sombre</button>
+            <button class="tw-theme-toggle" type="button" data-theme-toggle
+                    data-state="light" aria-pressed="false">
+                <span class="tw-toggle-icon" aria-hidden="true">☾</span>
+                <span class="tw-toggle-label">Thème sombre</span>
+                <span class="tw-toggle-track" aria-hidden="true"><span class="tw-toggle-thumb"></span></span>
+            </button>
             <form method="post" action="<?= h(app_url('pages/logout.php')) ?>">
                 <?= csrf_field() ?>
                 <button class="btn btn-outline-secondary rounded-pill px-3" type="submit">

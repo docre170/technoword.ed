@@ -6,10 +6,15 @@ $user = require_role('apprenant', 'enseignant', 'admin');
 $dashboardData = [];
 if ($user['role'] === 'apprenant') {
     $statement = $pdo->prepare(
-        'SELECT COUNT(*) FROM cours WHERE statut = :statut'
+        'SELECT
+            (SELECT COUNT(*) FROM cours WHERE statut = :statut) AS courses,
+            (SELECT COUNT(*) FROM inscription WHERE utilisateur_id = :utilisateur_id) AS enrolled'
     );
-    $statement->execute(['statut' => 'publie']);
-    $dashboardData['courses'] = (int) $statement->fetchColumn();
+    $statement->execute([
+        'statut' => 'publie',
+        'utilisateur_id' => $user['id'],
+    ]);
+    $dashboardData = $statement->fetch();
 } elseif ($user['role'] === 'enseignant') {
     $statement = $pdo->prepare(
         'SELECT COUNT(*) AS total,
@@ -45,7 +50,7 @@ $dashboardCopy = [
         'action' => 'Explorer les cours',
         'url' => 'pages/cours.php',
         'metric' => 'cours publiés',
-        'value' => $dashboardData['courses'],
+        'value' => (int) ($dashboardData['courses'] ?? 0),
         'icon' => '⌕',
     ],
     'enseignant' => [
@@ -56,7 +61,7 @@ $dashboardCopy = [
         'action' => 'Gérer mes cours',
         'url' => 'pages/enseignant/cours.php',
         'metric' => 'cours dans votre espace',
-        'value' => (int) $dashboardData['total'],
+        'value' => (int) ($dashboardData['total'] ?? 0),
         'icon' => '✎',
     ],
     'admin' => [
@@ -64,10 +69,10 @@ $dashboardCopy = [
         'title' => 'Pilotez la',
         'accent' => 'plateforme.',
         'description' => 'Vue d’ensemble des comptes, du catalogue et des cours à examiner.',
-        'action' => 'Consulter le catalogue',
-        'url' => 'pages/cours.php',
+        'action' => 'Examiner les cours',
+        'url' => 'pages/admin/cours.php',
         'metric' => 'cours en attente',
-        'value' => (int) $dashboardData['pending'],
+        'value' => (int) ($dashboardData['pending'] ?? 0),
         'icon' => '▦',
     ],
 ];
@@ -95,9 +100,11 @@ $dashboard = $dashboardCopy[$user['role']];
             <span>TechnoWorld <span class="text-primary">Ed</span></span>
         </a>
         <div class="d-flex align-items-center gap-2">
-            <button class="btn btn-outline-secondary rounded-pill px-3 tw-theme-toggle"
-                    type="button" data-theme-toggle aria-pressed="false">
-                Thème sombre
+            <button class="tw-theme-toggle" type="button" data-theme-toggle
+                    data-state="light" aria-pressed="false">
+                <span class="tw-toggle-icon" aria-hidden="true">☾</span>
+                <span class="tw-toggle-label">Thème sombre</span>
+                <span class="tw-toggle-track" aria-hidden="true"><span class="tw-toggle-thumb"></span></span>
             </button>
             <form method="post" action="<?= h(app_url('pages/logout.php')) ?>">
                 <?= csrf_field() ?>
@@ -143,13 +150,48 @@ $dashboard = $dashboardCopy[$user['role']];
     <?php if ($user['role'] === 'admin'): ?>
         <section class="row g-3 mt-4" aria-label="Indicateurs de la plateforme">
             <div class="col-6 col-lg-4">
-                <div class="tw-stat-card"><span><?= (int) $dashboardData['users'] ?></span><small>comptes</small></div>
+                <div class="tw-stat-card"><span><?= (int) ($dashboardData['users'] ?? 0) ?></span><small>comptes</small></div>
             </div>
             <div class="col-6 col-lg-4">
-                <div class="tw-stat-card"><span><?= (int) $dashboardData['published'] ?></span><small>cours publiés</small></div>
+                <div class="tw-stat-card"><span><?= (int) ($dashboardData['published'] ?? 0) ?></span><small>cours publiés</small></div>
             </div>
             <div class="col-12 col-lg-4">
-                <div class="tw-stat-card"><span><?= (int) $dashboardData['categories'] ?></span><small>catégories</small></div>
+                <div class="tw-stat-card"><span><?= (int) ($dashboardData['categories'] ?? 0) ?></span><small>catégories</small></div>
+            </div>
+        </section>
+        <div class="d-flex flex-wrap gap-3 mt-4">
+            <a class="btn btn-tw-primary px-4" href="<?= h(app_url('pages/admin/cours.php')) ?>">
+                Examiner les cours <span class="ms-2" aria-hidden="true">→</span>
+            </a>
+            <a class="btn btn-outline-primary rounded-pill px-4"
+               href="<?= h(app_url('pages/admin/utilisateurs.php')) ?>">
+                Gérer les comptes
+            </a>
+            <a class="btn btn-outline-primary rounded-pill px-4"
+               href="<?= h(app_url('pages/admin/categories.php')) ?>">
+                Gérer les catégories
+            </a>
+            <a class="tw-back-link align-self-center" href="<?= h(app_url('pages/cours.php')) ?>">
+                Voir le catalogue publié
+            </a>
+        </div>
+    <?php elseif ($user['role'] === 'apprenant'): ?>
+        <section class="mt-5">
+            <div class="tw-section-heading">
+                <div>
+                    <p class="tw-kicker mb-2">Votre activité</p>
+                    <h2 class="h3 fw-bold mb-0">Reprenez votre parcours</h2>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap gap-3 mt-3">
+                <a class="btn btn-outline-primary rounded-pill px-4"
+                   href="<?= h(app_url('pages/mes-cours.php')) ?>">
+                    Mes cours <span class="tw-count-badge ms-2"><?= (int) ($dashboardData['enrolled'] ?? 0) ?></span>
+                </a>
+                <a class="btn btn-outline-primary rounded-pill px-4"
+                   href="<?= h(app_url('pages/resultats.php')) ?>">
+                    Mes résultats
+                </a>
             </div>
         </section>
     <?php elseif ($user['role'] === 'enseignant'): ?>
@@ -165,7 +207,7 @@ $dashboard = $dashboardCopy[$user['role']];
             </div>
             <div class="tw-status-strip mt-3">
                 <span class="tw-status-dot" aria-hidden="true"></span>
-                <?= (int) $dashboardData['pending'] ?> en attente de validation
+                <?= (int) ($dashboardData['pending'] ?? 0) ?> en attente de validation
             </div>
         </section>
     <?php endif; ?>

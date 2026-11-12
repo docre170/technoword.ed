@@ -377,8 +377,12 @@ if ($selectedCourseId !== false && $selectedCourseId !== null) {
         <div class="d-flex align-items-center gap-2">
             <a class="btn btn-link text-decoration-none fw-semibold d-none d-sm-inline"
                href="<?= h(app_url('index.php')) ?>">Mon espace</a>
-            <button class="btn btn-outline-secondary rounded-pill px-3 tw-theme-toggle"
-                    type="button" data-theme-toggle aria-pressed="false">Thème sombre</button>
+            <button class="tw-theme-toggle" type="button" data-theme-toggle
+                    data-state="light" aria-pressed="false">
+                <span class="tw-toggle-icon" aria-hidden="true">☾</span>
+                <span class="tw-toggle-label">Thème sombre</span>
+                <span class="tw-toggle-track" aria-hidden="true"><span class="tw-toggle-thumb"></span></span>
+            </button>
             <form method="post" action="<?= h(app_url('pages/logout.php')) ?>">
                 <?= csrf_field() ?>
                 <button class="btn btn-outline-secondary rounded-pill px-3" type="submit">Déconnexion</button>
@@ -495,6 +499,10 @@ if ($selectedCourseId !== false && $selectedCourseId !== null) {
                             <a class="btn btn-sm btn-outline-primary rounded-pill mt-3"
                                href="<?= h(app_url('pages/enseignant/cours.php?cours=' . (int) $course['id'])) ?>">
                                 Gérer le cours et ses leçons
+                            </a>
+                            <a class="btn btn-sm btn-outline-secondary rounded-pill mt-3 ms-1"
+                               href="<?= h(app_url('pages/enseignant/quiz.php?cours=' . (int) $course['id'])) ?>">
+                                Gérer les quiz
                             </a>
                         </article>
                     <?php endforeach; ?>

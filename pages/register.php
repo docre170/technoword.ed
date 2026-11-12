@@ -92,8 +92,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span class="tw-brand-mark" aria-hidden="true">TW</span>
             <span>TechnoWorld <span class="text-primary">Ed</span></span>
         </a>
-        <button class="btn btn-outline-secondary rounded-pill px-3 tw-theme-toggle"
-                type="button" data-theme-toggle aria-pressed="false">Thème sombre</button>
+        <button class="tw-theme-toggle" type="button" data-theme-toggle
+                data-state="light" aria-pressed="false">
+            <span class="tw-toggle-icon" aria-hidden="true">☾</span>
+            <span class="tw-toggle-label">Thème sombre</span>
+            <span class="tw-toggle-track" aria-hidden="true"><span class="tw-toggle-thumb"></span></span>
+        </button>
     </div>
 </header>
 <main class="tw-shell tw-main">
