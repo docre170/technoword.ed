@@ -1,0 +1,40 @@
+                        VERSION
+PHP 8.5.11 (cli, ZTS, Windows x64)
+                        creation du seed.php
+
+1. Environnement (pour le tableau I et la méthodologie)
+
+PC : modèle, CPU, nombre de cœurs, RAM, SSD ou HDD (commandes : systeminfo | findstr /C:"OS Name" /C:"Total Physical Memory" et wmic cpu get name,numberofcores)
+Système : Windows (version), PC branché sur secteur
+PHP : 8.5.11 (cli, ZTS, Windows x64)
+Plus tard : versions de Node, Python, Go, k6 (node -v, python --version, go version, k6 version)
+
+2. Données (preuve d’équivalence)
+
+5 000 cours, 25 000 résultats
+cours.json : 1 296 972 octets, SHA-256 46e2b8710d75e0e40517d249fdb0a8beb2ba8606a82b0af1e2ca5ad0af231bad
+resultats.json : 1 575 811 octets, SHA-256 e9832096a05fecb55b0c8a6fc9f3d772b3980df40de722f7d9b34769e2a4580c
+Commande de génération : php seed.php 5000, générée par GitHub Copilot, déterminisme vérifié (oui/non après la 2e exécution)
+Date et heure : dimanche 15 novembre 2026, 14 h 12
+
+3. Développement (section III du rapport)
+
+Pour chaque version : outil d’IA utilisé (Copilot, Claude, Codex), nombre de prompts, temps passé, bugs introduits par l’IA, difficultés, nombre de lignes de code
+Décisions : sujet passé de « étudiants » à « cours », stockage JSON, 8 threads/workers, PHP mono-processus sous Windows, volume réduit à 5 000
+
+4. Plus tard, pendant les mesures
+
+Date et heure de chaque série, version testée, palier (VU), numéro d’essai
+Incidents (coupures de courant, erreurs, essais refaits) : ils expliquent les écarts
+
+                        Mes commandes
+  Id CommandLine
+  -- -----------
+   1 try { . "c:\Users\DOCRE\AppData\Local\Programs\Microsoft VS Code\69047191fc\resources\ap...
+   2 php -v
+   3 php -m | findstr mbstring
+   4 php seed.php 5000...
+   5 php seed.php 5000
+   6 xcopy data data_origine /E /I
+   7 xcopy C:\TRAVAIL\technoword.ed C:\TRAVAIL\technoword.ed_TP2 /E /I                          
+   
